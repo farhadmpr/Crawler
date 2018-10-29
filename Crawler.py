@@ -1,3 +1,6 @@
+index = []
+
+
 def get_next_target(content):
     start_link = content.find('<a href=')
     if start_link==-1:
@@ -51,13 +54,20 @@ def add_to_index(index, keyword, url):
             return
     index.append([keyword, [url]])
 
+
 def lookup(index, keyword):
     for entry in index:
         if entry[0]==keyword:
             return entry[1]
     return []
 
-    
+
+def add_page_to_index(index, url, content):
+    words=content.split()
+    for word in words:
+        add_to_index(index, word, url)
+
+
 def crawl(seed="https://www.wikipedia.org"):
     """
     Crawl web using Breadth-First-Search
