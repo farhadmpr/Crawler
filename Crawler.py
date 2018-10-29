@@ -37,17 +37,25 @@ def get_all_links(content):
 def get_page_content(url):
     import urllib.request
     try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})   
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         res = urllib.request.urlopen(req).read().decode('utf-8')
-    except: 
+    except:
         res=""
     return res
 
 
-def crawl(seed="https://www.wikipedia.org"):    
+def add_to_index(index, keyword, url):
+    for entry in index:
+        if entry[0]==keyword:
+            entry[1].append(url)
+            return
+    index.append([keyword, [url]])
+
+
+def crawl(seed="https://www.wikipedia.org"):
     """
     Crawl web using Breadth-First-Search
-    """    
+    """
     to_crawl = [seed]
     crawled = []
     while to_crawl:
@@ -62,4 +70,3 @@ def crawl(seed="https://www.wikipedia.org"):
     return crawled
 
 crawl()
-
