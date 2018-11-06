@@ -68,6 +68,12 @@ def add_page_to_index(index, url, content):
         add_to_index(index, word, url)
 
 
+def union(list1, list2):
+    for e in list2:
+        if e not in list1:
+            list1.append(e)
+
+
 def crawl(seed="https://www.wikipedia.org"):
     """
     Crawl web using Breadth-First-Search
