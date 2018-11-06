@@ -38,7 +38,7 @@ def get_page_content(url):
     import urllib.request
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        res = urllib.request.urlopen(req).read().decode('utf-8')
+        res = urllib.request.urlopen(req, timeout=10).read().decode('utf-8')
     except:
         res=""
     return res
@@ -70,7 +70,7 @@ def union(list1, list2):
             list1.append(e)
 
 
-def crawl(seed="https://www.wikipedia.org"):
+def crawl(seed="https://stackoverflow.com"):
     """
     Crawl web using Breadth-First-Search
     """
@@ -78,6 +78,7 @@ def crawl(seed="https://www.wikipedia.org"):
     crawled = []
 
     index = {}
+    i=0
 
     while to_crawl:
         url = to_crawl.pop(0)
@@ -87,8 +88,9 @@ def crawl(seed="https://www.wikipedia.org"):
             union(to_crawl, get_all_links(content))
             #to_crawl=list(set().union(to_crawl, links))
             crawled.append(url)
-            print(url)
-            if len(crawled) == 3000: break
+            i+=1
+            print(i, url)
+            if len(crawled) == 30000: break
     return index
 
 crawl()
