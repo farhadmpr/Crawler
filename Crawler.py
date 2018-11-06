@@ -1,6 +1,3 @@
-index = []
-
-
 def get_next_target(content):
     start_link = content.find('<a href=')
     if start_link==-1:
@@ -48,18 +45,17 @@ def get_page_content(url):
 
 
 def add_to_index(index, keyword, url):
-    for entry in index:
-        if entry[0]==keyword:
-            entry[1].append(url)
-            return
-    index.append([keyword, [url]])
+    if keyword in index:
+        index[keyword].append(url)
+    else:
+        index[keyword]=[url]
 
 
 def lookup(index, keyword):
-    for entry in index:
-        if entry[0]==keyword:
-            return entry[1]
-    return []
+    if keyword in index:
+        return index[keyword]
+    else:
+        return []
 
 
 def add_page_to_index(index, url, content):
@@ -80,15 +76,19 @@ def crawl(seed="https://www.wikipedia.org"):
     """
     to_crawl = [seed]
     crawled = []
+
+    index = {}
+
     while to_crawl:
         url = to_crawl.pop(0)
         if url not in crawled:
-            links = get_all_links(get_page_content(url))
-            #union(to_crawl, links)
-            to_crawl=list(set().union(to_crawl, links))
+            content = get_page_content(url)
+            add_page_to_index(index, url, content)
+            union(to_crawl, get_all_links(content))
+            #to_crawl=list(set().union(to_crawl, links))
             crawled.append(url)
             print(url)
             if len(crawled) == 3000: break
-    return crawled
+    return index
 
 crawl()
