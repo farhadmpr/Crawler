@@ -70,14 +70,40 @@ def union(list1, list2):
             list1.append(e)
 
 
+def lookup_best(keyword, index, ranks):
+    # todo
+    return
+
+
+def compute_ranks(graph):
+    d=0.9 #damping factor
+    num_loops = 10
+    num_pages = len(graph)
+
+    ranks={}
+    for page in graph:
+        rank[page]= 1.0 / num_pages
+
+    for i in range(num_loops):
+        new_ranks = {}
+        for page in graph:
+            new_ranks = (1-d) / num_pages
+            for node in graph:
+                if page in graph[node]:
+                    new_ranks = new_ranks + d * (ranks[node]/len(graph[node]))
+            new_ranks[page] = new_ranks
+        ranks=new_ranks
+    return ranks
+
+
 def crawl(seed="https://stackoverflow.com"):
     """
     Crawl web using Breadth-First-Search
     """
     to_crawl = [seed]
     crawled = []
-
     index = {}
+    graph = {}
     i=0
 
     while to_crawl:
@@ -85,12 +111,17 @@ def crawl(seed="https://stackoverflow.com"):
         if url not in crawled:
             content = get_page_content(url)
             add_page_to_index(index, url, content)
-            union(to_crawl, get_all_links(content))
+            out_links = get_all_links(content)
+
+            graph[url] = out_links
+
+
+            union(to_crawl, out_links)
             #to_crawl=list(set().union(to_crawl, links))
             crawled.append(url)
             i+=1
             print(i, url)
             if len(crawled) == 30000: break
-    return index
+    return index, graph
 
 crawl()
